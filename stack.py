@@ -78,7 +78,7 @@ class Stack(object):
 
         # FIXME
 
-        pass
+        return len(self._list)
         
     def empty(self):
         """Empty stack::
@@ -99,7 +99,8 @@ class Stack(object):
 
         # FIXME
 
-        pass
+        self._list = []
+
 
     def is_empty(self):
         """Is stack empty?
@@ -117,9 +118,12 @@ class Stack(object):
             False
         """
 
-        # FIXME
+        if self.length() == 0:
+            return True
 
-        pass
+        else:
+            return False
+
 
 if __name__ == "__main__":
     import doctest
