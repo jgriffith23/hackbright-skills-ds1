@@ -77,8 +77,10 @@ class LinkedList(object):
         """
 
         # FIXME
-
-        pass
+        node = self.head
+        while node is not None:
+            print node.data
+            node = node.next
 
     def get_node_by_index(self, idx):
         """Return a node with the given index::
@@ -95,9 +97,18 @@ class LinkedList(object):
             <Node fish>
         """
 
-        # FIXME
+        node = self.head
+        count = 0
+        while (node is not None) and (count != idx):
+            node = node.next
+            count += 1
 
-        pass
+        # It makes sense to just return None if we hit that condition
+        # before count == idx, because we're saying there is no node at
+        # that index.
+        return node
+
+
 
 if __name__ == "__main__":
     import doctest
