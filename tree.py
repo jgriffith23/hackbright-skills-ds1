@@ -26,9 +26,7 @@ class Node(object):
             2
         """
 
-        # FIXME
-
-        pass
+        return len(self.children)
 
 
 class Tree(object):
@@ -57,6 +55,60 @@ class Tree(object):
                 return node
 
             to_visit.extend(node.children)
+
+
+def get_descendants(node, tracker=[], lvl=1):
+    """Given a node, get all that node's children in a list. Assumes you're
+    starting with a root node, making the first descendant level 1.
+
+    For the following tree:
+
+                       A
+                     /   \
+                    B     C
+                   /  \     \
+                  D    E     F
+                        \
+                         G
+
+    Where A = lv 0, B/C = lv1, D/E/F = lv2, G = lv3, the following example
+    shows the descendants. We take a depth first approach here, getting
+    all descendants of B before getting descendants of C.
+
+    >>> a = Node("A")
+    >>> b = Node("B")
+    >>> c = Node("C")
+    >>> d = Node("D")
+    >>> e = Node("E")
+    >>> f = Node("F")
+    >>> g = Node("G")
+    >>> a.children = [b,c]
+    >>> b.children = [d,e]
+    >>> c.children = [f]
+    >>> tree = Tree(a)
+    >>> e.children=[g]
+    >>> print(get_descendants(tree.root))
+    [(<Node B>, 1), (<Node D>, 2), (<Node E>, 2), (<Node G>, 3), (<Node C>, 1), (<Node F>, 2)]
+
+    """
+
+    # Set list to return equal to list passed.
+    descendants = tracker
+
+    # For each child of the passed node, check whether that child is in the 
+    # current descendants list. If not, append it, along with its tree level.
+    # Then, call this function on that child, passing the current list.
+    for child in node.children:
+        if child not in descendants:
+            descendants.append((child, lvl))
+
+            # Recursion!!!!
+            get_descendants(child, descendants, lvl+1)
+
+    return descendants
+
+
+
 
 
     def breadth_first_search(self, data):
@@ -88,13 +140,38 @@ class Tree(object):
             >>> e.children = [b2]
             >>> tree = Tree(a)
 
-            >>> tree.depth_first_search("B") is b2
+            >>> tree.breadth_first_search("B") is b2
             True
+
+            (Adding a new doctest to check that we return none for something that
+            isn't in the tree, as requested.)
+
+            >>> a = Node("A")
+            >>> b1 = Node("B")
+            >>> b2 = Node("B")
+            >>> c = Node("C")
+            >>> d = Node("D")
+            >>> e = Node("E")
+            >>> a.children = [c, e]
+            >>> c.children = [d]
+            >>> d.children = [b1]
+            >>> e.children = [b2]
+            >>> tree = Tree(a)
+
+            >>> print(tree.breadth_first_search("F"))
+            None
 
         """
 
-        # FIXME
-        pass
+        to_visit = [self.root]
+
+        while to_visit:
+            node = to_visit.pop(0)
+
+            if node.data == data:
+                return node
+
+            to_visit.extend(node.children)
 
 if __name__ == "__main__":
     import doctest
